@@ -20,7 +20,7 @@ RUN npm install
 RUN bower --allow-root install
 
 #Bundle app source
-COPY . /usr/src/app
+ADD . /usr/src/app
 EXPOSE 9000
 EXPOSE 35729
 CMD ["grunt", "serve", "--force"]
