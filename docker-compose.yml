@@ -1,0 +1,52 @@
+version: '2'
+
+services:
+    backend:
+        container_name: backend
+        build: ./backend/
+        environment:
+            PROJECT_NAME: backend
+            NODE_ENV: dev
+        volumes:
+            # - /home/ubuntu/working/source_code/evgroups/sokhop-backend-auth:/build/
+            - ./sokhop-backend-auth/config/dev_local.json:/build/config/local.json
+        ports:
+            - '3000:3000'
+        command: "pm2 start -x --no-daemon app.js"  #--daemon"
+        extra_hosts:
+            - "mysql: 192.168.1.190"
+            - "rabbit: 192.168.1.190"
+        networks:
+            - front-net
+            - back-net
+
+    frontend:
+        container_name: frontend
+        environment:
+            PROJECT_NAME: frontend
+            NODE_ENV: "dev_local"
+        build: ./frontend/
+        # volumes:
+        #     - /home/ubuntu/working/source_code/evgroups/sokhop-frontend-cms/config/dev.json:/build/config/default.json
+        ports:
+            - '3008:80'
+        # environment:
+        #     PROJECT_NAME: cms
+        #     NODE_ENV: "dev"
+        command: "/usr/bin/supervisord"
+        networks:
+            - front-net
+
+    # webserver_nginx:
+    #     container_name: webserver_nginx
+    #     build: ./sokhop-deployment/nginx/
+    #     ports:
+    #         - '80:80'
+    #     volumes:
+    #         - ./sokhop-deployment/nginx/sites-enabled/api.sokhop.local:/etc/nginx/sites-enabled/api.sokhop.local
+    #     networks:
+    #         - front-net
+
+networks:
+  front-net:
+  back-net:
