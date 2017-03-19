@@ -1,14 +1,14 @@
 version: '2'
 
 services:
-    backend:
-        container_name: backend
-        build: ./backend/
+    nodejs:
+        container_name: nodejs
+        build: ./docker-nodejs/
         environment:
-            PROJECT_NAME: backend
+            PROJECT_NAME: doker-nodejs
             NODE_ENV: dev
         volumes:
-            - ./backend:/usr/src/app
+            - ./docker-nodejs:/usr/src/app
         ports:
             - '8080:8080'
             - '5858:5858'
@@ -18,32 +18,40 @@ services:
             - front-net
             # - back-net
 
-    # frontend:
-    #     container_name: frontend
-    #     environment:
-    #         PROJECT_NAME: frontend
-    #         NODE_ENV: "dev_local"
-    #     build: ./frontend/
-    #     # volumes:
-    #     #     - /home/ubuntu/working/source_code/evgroups/sokhop-frontend-cms/config/dev.json:/build/config/default.json
-    #     ports:
-    #         - '3008:80'
-    #     # environment:
-    #     #     PROJECT_NAME: cms
-    #     #     NODE_ENV: "dev"
-    #     command: "/usr/bin/supervisord"
-    #     networks:
-    #         - front-net
+    angularjs:
+        container_name: angularjs
+        build: ./docker-angular/
+        environment:
+            PROJECT_NAME: docker-angular
+            NODE_ENV: "dev"
+        # volumes:
+            # - /home/ubuntu/working/source_code/evgroups/sokhop-frontend-cms/config/dev.json:/build/config/default.json
+        ports:
+            - '9000:9000'
+            - '35729:35729'
+        command: "grunt serve"
+        networks:
+            - front-net
 
-    # webserver_nginx:
-    #     container_name: webserver_nginx
-    #     build: ./sokhop-deployment/nginx/
-    #     ports:
-    #         - '80:80'
-    #     volumes:
-    #         - ./sokhop-deployment/nginx/sites-enabled/api.sokhop.local:/etc/nginx/sites-enabled/api.sokhop.local
-    #     networks:
-    #         - front-net
+    python:
+        container_name: python
+        build: ./python-flask/
+        environment:
+            PROJECT_NAME: python-flask
+        ports:
+            - '5000:5000'
+        command: "python app.py"
+        networks:
+            - front-net
+
+    webserver_nginx:
+        container_name: webserver_nginx
+        build: ./nginx/
+        ports:
+            - '80:80'
+        # command: "nginx -g daemon off"
+        networks:
+            - front-net
 
 networks:
   front-net:
