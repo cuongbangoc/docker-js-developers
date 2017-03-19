@@ -38,6 +38,8 @@ services:
         build: ./python-flask/
         environment:
             PROJECT_NAME: python-flask
+        volumes:
+            - ./python-flask:/usr/src/app
         ports:
             - '5000:5000'
         command: "python app.py"
@@ -49,6 +51,10 @@ services:
         build: ./nginx/
         ports:
             - '80:80'
+        depends_on:
+            - nodejs
+            - angularjs
+            - python
         # command: "nginx -g daemon off"
         networks:
             - front-net
